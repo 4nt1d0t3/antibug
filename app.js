@@ -1,7 +1,7 @@
 const express = require('express'),
 	app = express(),
 	mysql = require('mysql'),
-	connection = mysql.createConnection({
+	db = mysql.createConnection({
 		host: 'localhost',
 		user: 'root',
 		password: 'P4ul1sCh3nk0',
@@ -9,23 +9,21 @@ const express = require('express'),
 		insecureAuth: true
 	});
 
-	connection.connect((err) => {
+const indexRoutes = require('./control/index'),
+	projectRoutes = require('./control/projects');
+
+app.use(indexRoutes);
+app.use(projectRoutes);
+app.use(express.static(__dirname + '/public'));
+
+
+	db.connect((err) => {
 		if(err) throw err;
 		console.log('connected!')
 	})
 
 app.set('view engine', 'ejs');
 
-//LANDING PAGE
-app.get('/', (req, res) => {
-	res.render('landing');
-});
-
-//INDEX -- PROJECTS ROUTE
-app.get('/projects', (req, res) => {
-	res.render('projects');
-});
-
-app.listen(process.env.PORT, process.env.IP, () => {
+app.listen(PORT=3000, () => {
 	console.log('Bug server started!');
 });

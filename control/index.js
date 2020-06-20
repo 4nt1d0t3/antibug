@@ -1,6 +1,5 @@
 const express = require('express'),
 	router = express.Router(),
-	crypto = require('crypto'),
 	bodyParser = require('body-parser'),
 	argon2 = require('argon2'),
 	mysql = require('mysql'),
@@ -29,7 +28,7 @@ router.get('/register', (req, res) => {
 	res.render('register');
 });
 
-//SIGN UP LOGIC
+//REGISTER LOGIC
 router.post('/register', jsonParser, async (req, res) => {
 	const password = req.body.password;
 	//Hash password using Argon2
@@ -51,6 +50,46 @@ router.post('/register', jsonParser, async (req, res) => {
 		//redirect to projects page after succesful login
 		res.redirect('/projects');
 	});
+});
+
+//SHOW SIGN IN FORM
+router.get('/login', (req, res) => {
+	res.render('login');
+});
+
+//SIGN IN LOGIC
+router.post('/login', jsonParser, (req, res) => {
+	let username = req.body.username;
+	let password = req.body.password;
+	let redirect = (destination) => res.redirect(destination);
+	let query = 'SELECT username, pswrd FROM user_table WHERE username = ?';
+	//Check if both username and password entered
+	if (username && password) {
+		//retrieve user data from DB
+		db.query(query, [ username ], async (err, res, fields) => {
+			if (err) {
+				console.log(`Error in the query ${err}`);
+			} else {
+				//check if username exists
+				if (res.length) {
+					//check if password matches
+					if (!await argon2.verify(res[0]['pswrd'], password)) {
+						console.log('wrong password');
+						redirect('/login')
+					} else {
+						console.log('correct password');
+						redirect('/projects');
+					}
+				} else {
+					console.log('Username not found');
+					redirect('/login')
+				}
+			}
+		});
+	} else {
+		redirect('/login')
+		console.log('Please enter both username and password');
+	}
 });
 
 module.exports = router;

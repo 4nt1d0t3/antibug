@@ -2,6 +2,7 @@ const express = require('express'),
 	router = express.Router(),
 	bodyParser = require('body-parser'),
 	argon2 = require('argon2'),
+	sessions = require('client-sessions'),
 	mysql = require('mysql'),
 	db = mysql.createConnection({
 		host: 'localhost',
@@ -10,6 +11,14 @@ const express = require('express'),
 		database: 'bug_tracker',
 		insecureAuth: true
 	});
+
+	router.use(
+		sessions({
+			cookieName: 'session',
+			secret: 'K1m1s4t00t1e',
+			duration: 30 * 60 * 1000 //30 min duration
+		})
+	);
 
 const jsonParser = bodyParser.json();
 router.use(
@@ -78,6 +87,7 @@ router.post('/login', jsonParser, (req, res) => {
 						redirect('/login')
 					} else {
 						console.log('correct password');
+						req.session.userId = res[0]['username'];
 						redirect('/projects');
 					}
 				} else {

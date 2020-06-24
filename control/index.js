@@ -1,29 +1,27 @@
+const { sequelize } = require('../models');
+
 const express = require('express'),
 	router = express.Router(),
-	bodyParser = require('body-parser'),
 	argon2 = require('argon2'),
+	bodyParser = require('body-parser'),
 	sessions = require('client-sessions'),
-	mysql = require('mysql'),
-	db = mysql.createConnection({
-		host: 'localhost',
-		user: 'root',
-		password: 'P4ul1sCh3nk0',
-		database: 'bug_tracker',
-		insecureAuth: true
-	});
+	db = require('../config/database'),
+	User = sequelize.import('../models/user');
 
-	router.use(
-		sessions({
-			cookieName: 'session',
-			secret: 'K1m1s4t00t1e',
-			duration: 30 * 60 * 1000 //30 min duration
-		})
-	);
-
-const jsonParser = bodyParser.json();
+router.use(bodyParser.json());
 router.use(
 	bodyParser.urlencoded({
 		extended: true
+	})
+);
+const passport = require('../config/passport/passport');
+router.use(passport.initialize());
+router.use(passport.session());
+router.use(
+	sessions({
+		cookieName: 'session',
+		secret: 'K1m1s4t00t1e',
+		duration: 30 * 60 * 1000 //30 min duration
 	})
 );
 
@@ -38,68 +36,62 @@ router.get('/register', (req, res) => {
 });
 
 //REGISTER LOGIC
-router.post('/register', jsonParser, async (req, res) => {
-	const password = req.body.password;
+router.post('/register', async (req, res) => {
 	//Hash password using Argon2
-	let hash;
+	const username = req.body.username;
+	let hashedPassword;
 	try {
-		hash = await argon2.hash(password);
+		hashedPassword = await argon2.hash(req.body.password);
 	} catch (err) {
 		console.log(err);
 	}
 	//Define new user with username and hashed password to insert into DB
-	const newUser = {
-		username: req.body.username,
-		pswrd: hash
-	};
-	//Insert into DB logic
-	db.query('INSERT INTO user_table SET ?', newUser, (err, result) => {
-		if (err) throw 'something is wrong with the query ' + err;
-		console.log('Added user ' + result.username);
-		//redirect to projects page after succesful login
-		res.redirect('/projects');
-	});
+	const excistingUser = await User.findOne({ where: { username: username } });
+	if (!excistingUser) {
+		User.create({ username: username, password: hashedPassword }).then((user) => {
+			console.log(user.dataValues);
+			res.redirect('/projects');
+		});
+	} else {
+		console.log('Username is already taken');
+		res.redirect('/register');
+	}
 });
 
-//SHOW SIGN IN FORM
+//SHOW LOGIN FORM
 router.get('/login', (req, res) => {
 	res.render('login');
 });
 
-//SIGN IN LOGIC
-router.post('/login', jsonParser, (req, res) => {
+//LOGIN LOGIC
+router.post('/login', async (req, res) => {
 	let username = req.body.username;
 	let password = req.body.password;
 	let redirect = (destination) => res.redirect(destination);
-	let query = 'SELECT username, pswrd FROM user_table WHERE username = ?';
-	//Check if both username and password entered
-	if (username && password) {
-		//retrieve user data from DB
-		db.query(query, [ username ], async (err, res, fields) => {
-			if (err) {
-				console.log(`Error in the query ${err}`);
-			} else {
-				//check if username exists
-				if (res.length) {
-					//check if password matches
-					if (!await argon2.verify(res[0]['pswrd'], password)) {
-						console.log('wrong password');
-						redirect('/login')
-					} else {
-						console.log('correct password');
-						req.session.userId = res[0]['username'];
-						redirect('/projects');
-					}
-				} else {
-					console.log('Username not found');
-					redirect('/login')
-				}
-			}
-		});
+	// 	//retrieve user data from DB
+	let loggedUser = await User.findOne({ raw: true, where: { username: username } });
+	if (loggedUser) {
+		//check if password matches
+		if (!await argon2.verify(loggedUser.password, password)) {
+			console.log('wrong password');
+			redirect('/login');
+		} else {
+			console.log(loggedUser.username);
+			console.log('correct password');
+			req.session.userId = loggedUser.username;
+			redirect('/projects');
+		}
 	} else {
-		redirect('/login')
-		console.log('Please enter both username and password');
+		console.log('Please enter correct username');
+		redirect('/login');
 	}
+});
+
+//LOGOUT ROUTE
+router.get('/logout', (req, res) => {
+	req.logout();
+	// req.flash('success', 'Succesfully logged out!');
+	res.redirect('/');
 });
 
 module.exports = router;

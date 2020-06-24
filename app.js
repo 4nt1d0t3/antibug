@@ -1,18 +1,22 @@
 const express = require('express'),
 	app = express(),
 	mysql = require('mysql'),
+	bodyParser = require('body-parser'),
 	sessions = require('client-sessions'),
-	db = mysql.createConnection({
-		host: 'localhost',
-		user: 'root',
-		password: 'P4ul1sCh3nk0',
-		database: 'bug_tracker',
-		insecureAuth: true
-	});
+	passport = require('passport');
 
 const indexRoutes = require('./control/index'),
-	projectRoutes = require('./control/projects');
+	projectRoutes = require('./control/projects'),
+	db = require('./config/database');
 
+db
+	.authenticate()
+	.then(() => {
+		console.log('Connection has been established successfully.');
+	})
+	.catch((err) => {
+		console.error('Unable to connect to the database:', err);
+	});
 app.use(indexRoutes);
 app.use(projectRoutes);
 app.use(express.static(__dirname + '/public'));
@@ -23,11 +27,15 @@ app.use(
 		duration: 30 * 60 * 1000 //30 min duration
 	})
 );
+app.use(bodyParser.json());
+app.use(
+	bodyParser.urlencoded({
+		extended: true
+	})
+);
 
-db.connect((err) => {
-	if (err) throw err;
-	console.log('connected!');
-});
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.set('view engine', 'ejs');
 

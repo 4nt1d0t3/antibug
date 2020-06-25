@@ -39,6 +39,15 @@ app.use(passport.session());
 
 app.set('view engine', 'ejs');
 
+//MIDDLEWARE
+//check if a user is logged in
+function isLoggedIn(req, res, next) {
+	if (req.isAuthenticated()) {
+		return next();
+	}
+	res.redirect('/login');
+};
+
 app.listen((PORT = 3000), () => {
 	console.log('Bug server started!');
 });

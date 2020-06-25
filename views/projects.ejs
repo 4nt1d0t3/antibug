@@ -1,6 +1,29 @@
 <%- include("./partials/header") %>
-<h1>This is the projects page</h1>
 
-
+<div class="container">
+    <h1 class="text-center">Welcome <%= user %> </h1>
+    <table class="table table-striped table-success table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Status</th>
+                <th scope="col">Deadline</th>
+                <th scope="col">No. of Bugs</th>
+            </tr>
+        </thead>
+        <% projects.forEach((project) => { %>
+        <tbody>
+            <tr style="transform: rotate(0)">
+                <th scope="row"><a href="/projects/<%= project.id %>" class="stretched-link"></a><%= project.id %> </th>
+                <td><%= project.name %> </td>
+                <td><%= project.description %> </td>
+                <td><%= project.status %> </td>
+                <td><%= project.deadline %> </td>
+                <td><%= project.no_of_bugs %> </td>
+            </tr>
+            <% }) %>
+</div>
 
 <%- include("./partials/footer") %>

@@ -49,7 +49,7 @@ router.post('/register', async (req, res) => {
 	const excistingUser = await User.findOne({ where: { username: username } });
 	if (!excistingUser) {
 		User.create({ username: username, password: hashedPassword }).then((user) => {
-			console.log(user.dataValues);
+			console.log(user);
 			res.redirect('/projects');
 		});
 	} else {
@@ -67,29 +67,29 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
 	let username = req.body.username;
 	let password = req.body.password;
-	let redirect = (destination) => res.redirect(destination);
 	// 	//retrieve user data from DB
 	let loggedUser = await User.findOne({ raw: true, where: { username: username } });
 	if (loggedUser) {
 		//check if password matches
 		if (!await argon2.verify(loggedUser.password, password)) {
 			console.log('wrong password');
-			redirect('/login');
+			res.redirect('/login');
 		} else {
 			console.log(loggedUser.username);
 			console.log('correct password');
-			req.session.userId = loggedUser.username;
-			redirect('/projects');
+			req.session.userId = loggedUser.id;
+			req.session.userName = loggedUser.username;
+			res.redirect('/projects');
 		}
 	} else {
 		console.log('Please enter correct username');
-		redirect('/login');
+		res.redirect('/login');
 	}
 });
 
 //LOGOUT ROUTE
 router.get('/logout', (req, res) => {
-	req.logout();
+	req.session.reset();
 	// req.flash('success', 'Succesfully logged out!');
 	res.redirect('/');
 });

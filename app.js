@@ -3,7 +3,8 @@ const express = require('express'),
 	mysql = require('mysql'),
 	bodyParser = require('body-parser'),
 	sessions = require('client-sessions'),
-	passport = require('passport');
+	passport = require('passport'),
+	methodOverride = require('method-override');
 
 const indexRoutes = require('./control/index'),
 	projectRoutes = require('./control/projects'),
@@ -36,6 +37,7 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(methodOverride('_method'));
 
 app.set('view engine', 'ejs');
 
@@ -46,7 +48,7 @@ function isLoggedIn(req, res, next) {
 		return next();
 	}
 	res.redirect('/login');
-};
+}
 
 app.listen((PORT = 3000), () => {
 	console.log('Bug server started!');

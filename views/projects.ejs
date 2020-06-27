@@ -1,7 +1,10 @@
 <%- include("./partials/header") %>
 
 <div class="container">
-    <h1 class="text-center">Welcome <%= user %> </h1>
+    <div>
+        <h1 class="text-center">Welcome <%= user %> </h1>
+        <a type="button" class="btn btn-outline-success" href="/projects/new">Create A New Project</a>
+    </div>
     <table class="table table-striped table-success table-hover">
         <thead>
             <tr>
@@ -18,7 +21,12 @@
             <tr style="transform: rotate(0)">
                 <th scope="row"><a href="/projects/<%= project.id %>" class="stretched-link"></a><%= project.id %> </th>
                 <td><%= project.name %> </td>
-                <td><%= project.description %> </td>
+                <td><span style="display:inline-block;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 13ch;"> <%= project.description %> </span>
+                </td>
                 <td><%= project.status %> </td>
                 <td><%= project.deadline %> </td>
                 <td><%= project.no_of_bugs %> </td>

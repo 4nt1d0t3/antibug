@@ -1,0 +1,38 @@
+<%- include("./partials/header") %>
+<div class="container">
+    <div class="jumbotron" style="background-color: bisque;">
+        <h1 class="display-4 text-center"><%= project.name.toUpperCase() %></h1>
+        <p class="lead text-center"><%= project.description %> </p>
+        <hr class="my-4">
+        <p class="text-center">Status: <%= project.status %> </p>
+        <p class="text-center">Deadline: <%= project.deadline %> </p>
+        <div class="text-center">
+            <a class="btn btn-warning btn-lg" href="/projects/<%= project.id %> /edit" role="button">Edit</a>
+        </div>
+    </div>
+    <div class="text-right">
+        <a type="button" class="btn btn-outline-warning" href="/bugs/new">Log A New Bug</a>
+    </div>
+    <table class="table table-striped table-warning table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Bug Name</th>
+                <th scope="col">Bug Description</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <% bug.forEach((bug) => { %>
+        <tbody>
+            <tr>
+                <td><%= bug.id %> </td>
+                <td><%= bug.name %> </td>
+                <td><%= bug.description %> </td>
+                <td><%= bug.status %> </td>
+            </tr>
+            <% }) %>
+
+</div>
+
+
+<%- include("./partials/footer") %>

@@ -11,7 +11,6 @@ router.get('/', middleware.isLoggedIn, (req, res) => {
 	Project.findAll({ where: { owner: req.session.userName } })
 		.then((foundProjects) => {
 			let projects = JSON.parse(JSON.stringify(foundProjects));
-			// console.log(req.session)
 			res.render('projects/index', { projects, user: req.session.userName });
 		})
 		.catch((err) => {
@@ -33,6 +32,7 @@ router.post('/', middleware.isLoggedIn, (req, res) => {
 		deadline = req.body.deadline;
 	Project.create({ name, description, owner, status, deadline })
 		.then((newProject) => {
+			req.flash('success', `${newProject.name} succesfully created!`);
 			res.redirect('/projects');
 		})
 		.catch((err) => console.log(err));
@@ -66,6 +66,7 @@ router.put('/:id', middleware.isLoggedIn, async (req, res) => {
 		status,
 		deadline
 	});
+	req.flash('success', 'Project updated');
 	res.redirect(`/projects/${req.params.id}`);
 });
 
@@ -73,6 +74,7 @@ router.put('/:id', middleware.isLoggedIn, async (req, res) => {
 router.delete('/:id', middleware.isLoggedIn, async (req, res) => {
 	const foundProject = await middleware.findProject(req.params.id);
 	foundProject.destroy();
+	req.flash('error', 'Project destroyed!');
 	res.redirect('/projects');
 });
 

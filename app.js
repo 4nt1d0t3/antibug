@@ -1,8 +1,9 @@
 const express = require('express'),
 	app = express(),
 	bodyParser = require('body-parser'),
-	sessions = require('client-sessions');
-const methodOverride = require('method-override');
+	sessions = require('client-sessions'),
+	flash = require('connect-flash'),
+	methodOverride = require('method-override');
 
 const indexRoutes = require('./control/index'),
 	projectRoutes = require('./control/projects'),
@@ -15,6 +16,7 @@ app.use(
 	})
 );
 
+app.use(flash());
 app.use(methodOverride('_method'));
 
 app.use(express.static(__dirname + '/public'));
@@ -30,6 +32,13 @@ app.use(
 		}
 	})
 );
+
+app.use((req, res, next) => {
+	res.locals.currentUser = req.session.userName;
+	res.locals.error = req.flash('error');
+	res.locals.success = req.flash('success');
+	next();
+});
 
 app.use(indexRoutes);
 app.use('/projects', projectRoutes);

@@ -6,7 +6,7 @@ module.exports.isLoggedIn = function(req, res, next) {
 	if (req.session.userId) {
 		return next();
 	}
-	console.log('please login first!');
+	req.flash('error', 'Please login first!')
 	res.redirect('/');
 };
 

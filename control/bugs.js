@@ -5,7 +5,6 @@ const middleware = require('../middleware/index.js');
 const router = express.Router({ mergeParams: true });
 const Bug = sequelize.import('../models/bug');
 
-
 //NEW bugs route
 router.get('/new', middleware.isLoggedIn, async (req, res) => {
 	const foundProject = await middleware.findProject(req.params.id);
@@ -22,6 +21,7 @@ router.post('/', middleware.isLoggedIn, async (req, res) => {
 		status = req.body.status;
 	Bug.create({ name, description, project, status })
 		.then((newBug) => {
+			req.flash('success', 'Succesfully logged new bug!');
 			res.redirect(`/projects/${req.params.id}`);
 		})
 		.catch((err) => console.log(err));
@@ -47,12 +47,16 @@ router.put('/:bug_id', middleware.isLoggedIn, (req, res) => {
 			status
 		},
 		{ where: { id: req.params.bug_id } }
-	).then(() => res.redirect(`/projects/${req.params.id}/bugs/${req.params.bug_id}`));
+	).then(() => {
+		req.flash('success', 'Bug updated');
+		res.redirect(`/projects/${req.params.id}/bugs/${req.params.bug_id}`);
+	});
 });
 
 //DESTROY bug route
 router.delete('/:bug_id', middleware.isLoggedIn, (req, res) => {
 	Bug.destroy({ where: { id: req.params.bug_id } }).then(() => {
+		req.flash('error', 'Bug destroyed!')
 		res.redirect(`/projects/${req.params.id}`);
 	});
 });

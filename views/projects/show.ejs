@@ -14,6 +14,9 @@
             </form>
         </div>
     </div>
+    <div class="text-center">
+        <a href="/projects">Go back</a>
+    </div>
     <div class="text-center" style="margin: 15px 0;">
         <a type="button" class="btn btn-outline-warning" href="/projects/<%= project.id %> /bugs/new">Log A New Bug</a>
     </div>
@@ -29,7 +32,8 @@
         <% bug.forEach((bug) => { %>
         <tbody>
             <tr style="transform: rotate(0)">
-                <th scope="row"><a href="/projects/<%= project.id %>/bugs/<%= bug.id %>" class="stretched-link"></a><%= bug.id %> </th>
+                <th scope="row"><a href="/projects/<%= project.id %>/bugs/<%= bug.id %>"
+                        class="stretched-link"></a><%= bug.id %> </th>
                 <td><%= bug.name %> </td>
                 <td><span style="display:inline-block;
                     white-space: nowrap;
@@ -40,7 +44,6 @@
                 <td><%= bug.status %> </td>
             </tr>
             <% }) %>
-
 </div>
 
 

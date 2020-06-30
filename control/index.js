@@ -27,10 +27,11 @@ router.post('/register', async (req, res) => {
 		User.create({ username: username, password: hashedPassword }).then((user) => {
 			req.session.userId = user.id;
 			req.session.userName = user.username;
+			req.flash('success', `Welcome ${req.session.userName}!`);
 			res.redirect('/projects');
 		});
 	} else {
-		console.log('Username is already taken');
+		req.flash('error', 'Username is already taken');;
 		res.redirect('/register');
 	}
 });
@@ -49,16 +50,16 @@ router.post('/login', async (req, res) => {
 	if (loggedUser) {
 		//check if password matches
 		if (!await argon2.verify(loggedUser.password, password)) {
-			console.log('wrong password');
+			req.flash('error', 'Incorrect Password');
 			res.redirect('/login');
 		} else {
-			console.log('correct password');
 			req.session.userId = loggedUser.id;
 			req.session.userName = loggedUser.username;
+			req.flash('success', `Nice to see you again ${req.session.userName}!`);
 			res.redirect('/projects');
 		}
 	} else {
-		console.log('Please enter correct username');
+		req.flash('error', 'Incorrect Username');
 		res.redirect('/login');
 	}
 });
@@ -66,7 +67,7 @@ router.post('/login', async (req, res) => {
 //LOGOUT ROUTE
 router.get('/logout', (req, res) => {
 	req.session.reset();
-	// req.flash('success', 'Succesfully logged out!');
+	req.flash('success', 'Succesfully logged out!');
 	res.redirect('/');
 });
 

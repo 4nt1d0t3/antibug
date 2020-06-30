@@ -4,23 +4,18 @@
   "description": "A bug tracking web app",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "author": "Antti",
   "license": "ISC",
   "dependencies": {
     "argon2": "^0.26.2",
-    "body-parser": "^1.19.0",
     "client-sessions": "^0.8.0",
-    "dotenv": "^8.2.0",
     "ejs": "^3.1.3",
     "express": "^4.17.1",
     "method-override": "^3.0.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.1.0",
-    "passport": "^0.4.1",
-    "passport-local": "^1.0.0",
-    "passport-local-sequelize": "^0.9.0",
     "sequelize": "^5.21.13",
     "sequelize-cli": "^5.5.1"
   }

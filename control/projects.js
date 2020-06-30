@@ -1,20 +1,18 @@
 const { sequelize } = require('../models');
 
 const express = require('express');
-const router = express.Router();
+const middleware = require('../middleware/index.js');
+const router = express.Router({ mergeParams: true });
 const Project = sequelize.import('../models/project');
 const Bug = sequelize.import('../models/bug');
-const methodOverride = require('method-override');
-
-router.use(methodOverride('_method'));
 
 //INDEX -- PROJECTS ROUTE
-router.get('/projects', isLoggedIn, (req, res) => {
+router.get('/', middleware.isLoggedIn, (req, res) => {
 	Project.findAll({ where: { owner: req.session.userName } })
 		.then((foundProjects) => {
 			let projects = JSON.parse(JSON.stringify(foundProjects));
 			// console.log(req.session)
-			res.render('projects', { projects, user: req.session.userName });
+			res.render('projects/index', { projects, user: req.session.userName });
 		})
 		.catch((err) => {
 			console.log(err);
@@ -22,12 +20,12 @@ router.get('/projects', isLoggedIn, (req, res) => {
 });
 
 //NEW Project form
-router.get('/projects/new', isLoggedIn, (req, res) => {
-	res.render('new');
+router.get('/new', middleware.isLoggedIn, (req, res) => {
+	res.render('projects/new');
 });
 
 //CREATE Project post route
-router.post('/projects', isLoggedIn, (req, res) => {
+router.post('/', middleware.isLoggedIn, (req, res) => {
 	const name = req.body.name,
 		description = req.body.description,
 		owner = req.session.userName,
@@ -41,49 +39,41 @@ router.post('/projects', isLoggedIn, (req, res) => {
 });
 
 //SHOW Project details
-router.get('/projects/:id', isLoggedIn, async (req, res) => {
-	let foundProject = await Project.findOne({ where: { id: req.params.id } });
-	Bug.findAll({ where: { project: foundProject.name }, raw: true })
+router.get('/:id', middleware.isLoggedIn, async (req, res) => {
+	let foundProject = await middleware.findProject(req.params.id);
+	Bug.findAll({ where: { project: foundProject.name } })
 		.then((foundBugs) => {
 			let bug = JSON.parse(JSON.stringify(foundBugs));
-			res.render('show', { bug: bug, project: foundProject });
+			res.render('projects/show', { bug: bug, project: foundProject });
 		})
 		.catch((err) => console.log(err));
 });
 
 //EDIT Project details
-router.get('/projects/:id/edit', isLoggedIn, (req, res) => {
-	Project.findOne({ where: { id: req.params.id } })
-		.then((foundProject) => {
-			res.render('edit', { project: foundProject });
-		})
-		.catch((err) => console.log(err));
+router.get('/:id/edit', middleware.isLoggedIn, async (req, res) => {
+	const foundProject = await middleware.findProject(req.params.id);
+	res.render('projects/edit', { project: foundProject });
 });
 
 // UPDATE Project details
-router.put('/projects/:id', isLoggedIn, async (req, res) => {
+router.put('/:id', middleware.isLoggedIn, async (req, res) => {
+	const foundProject = await middleware.findProject(req.params.id);
 	let description = req.body.description;
 	let status = req.body.status;
 	let deadline = req.body.deadline;
-	console.log(description)
-	Project.update(
-		{
-			description,
-			status,
-			deadline
-		},
-		{ where: { id: req.params.id } }
-	).then(() => res.redirect(`/projects/${req.params.id}`));
+	foundProject.update({
+		description,
+		status,
+		deadline
+	});
+	res.redirect(`/projects/${req.params.id}`);
 });
 
-//check if a user is logged in middleware
-function isLoggedIn(req, res, next) {
-	if (req.session.userId) {
-		// console.log(req.session.userId);
-		return next();
-	}
-	console.log('please login first!');
-	res.redirect('/');
-}
+//DESTROY Project route
+router.delete('/:id', middleware.isLoggedIn, async (req, res) => {
+	const foundProject = await middleware.findProject(req.params.id);
+	foundProject.destroy();
+	res.redirect('/projects');
+});
 
 module.exports = router;

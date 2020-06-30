@@ -1,29 +1,9 @@
 const { sequelize } = require('../models');
 
 const express = require('express'),
-	router = express.Router(),
+	router = express.Router({ mergeParams: true }),
 	argon2 = require('argon2'),
-	bodyParser = require('body-parser'),
-	sessions = require('client-sessions'),
-	db = require('../config/database'),
 	User = sequelize.import('../models/user');
-
-router.use(bodyParser.json());
-router.use(
-	bodyParser.urlencoded({
-		extended: true
-	})
-);
-const passport = require('../config/passport/passport');
-router.use(passport.initialize());
-router.use(passport.session());
-router.use(
-	sessions({
-		cookieName: 'session',
-		secret: 'K1m1s4t00t1e',
-		duration: 30 * 60 * 1000 //30 min duration
-	})
-);
 
 //LANDING PAGE
 router.get('/', (req, res) => {
@@ -39,17 +19,14 @@ router.get('/register', (req, res) => {
 router.post('/register', async (req, res) => {
 	//Hash password using Argon2
 	const username = req.body.username;
-	let hashedPassword;
-	try {
-		hashedPassword = await argon2.hash(req.body.password);
-	} catch (err) {
-		console.log(err);
-	}
+	let hashedPassword = await argon2.hash(req.body.password);
+
 	//Define new user with username and hashed password to insert into DB
 	const excistingUser = await User.findOne({ where: { username: username } });
 	if (!excistingUser) {
 		User.create({ username: username, password: hashedPassword }).then((user) => {
-			console.log(user);
+			req.session.userId = user.id;
+			req.session.userName = user.username;
 			res.redirect('/projects');
 		});
 	} else {
@@ -75,7 +52,6 @@ router.post('/login', async (req, res) => {
 			console.log('wrong password');
 			res.redirect('/login');
 		} else {
-			console.log(loggedUser.username);
 			console.log('correct password');
 			req.session.userId = loggedUser.id;
 			req.session.userName = loggedUser.username;

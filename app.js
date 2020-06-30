@@ -1,55 +1,44 @@
 const express = require('express'),
 	app = express(),
-	mysql = require('mysql'),
 	bodyParser = require('body-parser'),
-	sessions = require('client-sessions'),
-	passport = require('passport'),
-	methodOverride = require('method-override');
+	sessions = require('client-sessions');
+const methodOverride = require('method-override');
 
 const indexRoutes = require('./control/index'),
 	projectRoutes = require('./control/projects'),
-	db = require('./config/database');
+	bugRoutes = require('./control/bugs');
 
-db
-	.authenticate()
-	.then(() => {
-		console.log('Connection has been established successfully.');
+app.use(express.json());
+app.use(
+	express.urlencoded({
+		extended: true
 	})
-	.catch((err) => {
-		console.error('Unable to connect to the database:', err);
-	});
-app.use(indexRoutes);
-app.use(projectRoutes);
+);
+
+app.use(methodOverride('_method'));
+
 app.use(express.static(__dirname + '/public'));
 app.use(
 	sessions({
 		cookieName: 'session',
 		secret: 'K1m1s4t00t1e',
-		duration: 30 * 60 * 1000 //30 min duration
-	})
-);
-app.use(bodyParser.json());
-app.use(
-	bodyParser.urlencoded({
-		extended: true
+		duration: 30 * 60 * 1000,
+		cookie: {
+			maxAge: 60000,
+			ephemeral: false,
+			httpOnly: true
+		}
 	})
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(methodOverride('_method'));
+app.use(indexRoutes);
+app.use('/projects', projectRoutes);
+app.use('/projects/:id/bugs', bugRoutes);
 
 app.set('view engine', 'ejs');
 
-//MIDDLEWARE
-//check if a user is logged in
-function isLoggedIn(req, res, next) {
-	if (req.isAuthenticated()) {
-		return next();
-	}
-	res.redirect('/login');
-}
+const Port = process.env.PORT || 3000;
 
-app.listen((PORT = 3000), () => {
-	console.log('Bug server started!');
+app.listen(Port, () => {
+	console.log(`Bug server started on port: ${Port}`);
 });

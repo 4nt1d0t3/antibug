@@ -26,7 +26,6 @@ app.use(
 		secret: 'K1m1s4t00t1e',
 		duration: 30 * 60 * 1000,
 		cookie: {
-			maxAge: 60000,
 			ephemeral: false,
 			httpOnly: true
 		}

@@ -1,6 +1,6 @@
 <%- include("../partials/header") %>
 <div class="container">
-    <div class="jumbotron" style="background-color: bisque;">
+    <div class="jumbotron bug-tron">
         <h1 class="display-4 text-center"><%= bug.name.toUpperCase() %></h1>
         <p class="lead text-center"><%= bug.description %> </p>
         <hr class="my-4">
@@ -8,7 +8,7 @@
         <p class="text-center">Project: <%= bug.project %> </p>
         <div class="text-center">
             <a class="btn btn-warning" href="/projects/<%= project.id %>/bugs/<%= bug.id %>/edit" role="button">Edit</a>
-            <form class="deleteForm" action="/projects/<%= project.id %>/bugs/<%= bug.id %>?_method=DELETE" method="POST" style="display: inline;">
+            <form class="delete-form" action="/projects/<%= project.id %>/bugs/<%= bug.id %>?_method=DELETE" method="POST">
                 <input type="submit" class="btn btn-danger" value="Delete">
             </form>
         </div>

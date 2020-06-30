@@ -1,0 +1,19 @@
+.margin-class {
+	margin: 15px 0;
+}
+.delete-form {
+	display: inline;
+}
+.bug-tron {
+	background-color: bisque;
+}
+.link-row {
+	transform: rotate(0);
+}
+.link-span {
+	display: inline-block;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 13ch;
+}

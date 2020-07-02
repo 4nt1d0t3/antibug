@@ -12,6 +12,7 @@ if (process.env.JAWSDB_URL) {
 } else {
   sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, config);
 }
+sequelize.createPool
 
 fs
   .readdirSync(__dirname)

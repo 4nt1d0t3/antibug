@@ -1,8 +1,14 @@
 <%- include("./partials/header") %>
-<h1>Login</h1>
-<form action="/login" method="POST">
-    <input type="text" name="username" placeholder="Username">
-    <input type="password" name="password" placeholder="Password">
-    <button>Login</button>
-</form>
+<div class="center">
+    <h1>Login</h1>
+    <div class="border-center">
+        <form action="/login" method="POST" class="form-width">
+            <input autocomplete="off" class="form-field" type="text" name="username" placeholder="Username">
+            <input autocomplete="off" class="form-field" type="password" name="password" placeholder="Password">
+            <input type="submit" class="hidden" id="submit-link">
+        </form>
+    </div>
+    <label for="submit-link" class="btn btn-success submit-button">Login</label>
+</div>
+
 <%- include("./partials/footer") %>

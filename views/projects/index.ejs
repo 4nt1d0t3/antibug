@@ -3,10 +3,10 @@
 <div class="container">
     <div class="text-center">
         <h1>Welcome <%= user %> </h1>
-        <a type="button" class="btn btn-outline-success margin-class" href="/projects/new" >Create A New Project</a>
+        <a type="button" class="btn btn-outline-warning margin-class new-button" href="/projects/new" >Create A New Project</a>
     </div>
-    <table class="table table-striped table-success table-hover">
-        <thead>
+    <table class="table table-striped table-hover" id="project-table">
+        <thead id="project-th">
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>

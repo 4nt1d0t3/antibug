@@ -1,12 +1,111 @@
-.margin-class {
-	margin: 15px 0;
+/* =============================== */
+/* VARIABLES */
+/* =============================== */
+:root {
+	--orange: #f2a104;
 }
+
+/* =============================== */
+/* NAVBAR */
+/* =============================== */
+/* Remove outline from navbar toggler */
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus {
+	outline: none;
+	box-shadow: none;
+}
+.navbar-custom {
+	background-color: none;
+}
+.nav-link,
+.navbar-brand {
+	color: var(--orange);
+}
+/* Change navbar toggler color */
+i {
+	color: var(--orange);
+}
+
+/* =============================== */
+/* FORMS */
+/* =============================== */
+/* Hide submit input field on login and register pages */
+.hidden {
+	display: none;
+}
+/* Style login and register submit buttons */
+.submit-button {
+	display: block;
+	margin-left: 40%;
+	margin-top: 20px;
+	width: 20%;
+	font-size: 1.5rem;
+	color: white;
+	background-color: var(--orange);
+}
+.form-field::placeholder {
+	text-align: center;
+	color: var(--orange);
+}
+.form-field {
+	border: 0;
+	border-bottom: 1.5px solid var(--orange);
+	background: none;
+	outline: none;
+	font-size: 2rem;
+	width: 100%;
+	color: var(--orange);
+}
+/* Style submit buttons on 'edit' and 'new' forms */
+.new-button {
+	background-color: var(--orange);
+	color: white;
+}
+textarea {
+	height: auto;
+}
+
+/* =============================== */
+/* BUGS AND PROJECTS */
+/* =============================== */
 .delete-form {
 	display: inline;
 }
-.bug-tron {
+/* Style jumbotron on bug 'show' */
+#bug-tron {
 	background-color: bisque;
+	width: 40%;
+	margin-left: 30%;
 }
+/* Style table on project index */
+#project-table {
+	background-color: #0074409f;
+	color: var(--orange);
+}
+#project-th {
+	background-color: #004e2b9f;
+}
+/* Style jumbotron on project 'show' */
+#project-tron {
+	background-color: #0074409f;
+	width: 60%;
+	margin-left: 20%;
+}
+/* hr in #project-tron */
+hr {
+	background-color: var(--orange);
+}
+
+/* =============================== */
+/* MISCELANEOUS STYLING AND BODY*/
+/* Styling and positioning multiple elements on multiple pages */
+/* =============================== */
+/* Gives margin for various buttons*/
+.margin-class {
+	margin: 15px 0;
+}
+/* Needed to make table rows clickable with just css */
 .link-row {
 	transform: rotate(0);
 }
@@ -16,4 +115,28 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	max-width: 13ch;
+}
+/* Center elements on login, register and landing page */
+.center {
+	z-index: 1;
+	position: relative;
+	text-align: center;
+	padding-top: 20vh;
+}
+/* Center forms on login and register pages */
+.border-center {
+	width: 40%;
+	display: inline-block;
+	padding: 35px;
+	background-color: none;
+}
+/* Style 'Go Back' links on various pages */
+.back-link {
+	color: var(--orange);
+}
+body {
+	font-family: 'Saira Condensed', sans-serif;
+	color: var(--orange);
+	background: rgb(114, 162, 192);
+	background: radial-gradient(circle, rgba(114, 162, 192, 1) 1%, rgba(29, 101, 166, 1) 25%, rgba(25, 46, 91, 1) 100%);
 }

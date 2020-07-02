@@ -1,8 +1,25 @@
 <%- include("./partials/header") %>
-<div class="container text-center">
-    <h1>Welcome!</h1>
-    <img src="../../../pictures4projects/bug_software_issue_tracking_computer_screen.jpg" alt="">
-    <h4>Please <a href="/login">Login</a> to continue</h4>
+<body>
+    <div class="container text-center">
+        <% if(success && success.length> 0) { %>
+        <div class="alert alert-success" role="alert">
+            <%= success %>
+        </div>
+        <% } %>
+        <% if(error && error.length> 0) { %>
+        <div class="alert alert-danger" role="alert">
+            <%= error %>
+        </div>
+        <% } %>
+    </div>
+
+<div class="center">
+    <div id="landing-border">
+        <h1 class="landing-font">Welcome to AntiBug!</h1>
+        <!-- <img src="./images/computerbug.jpg"> -->
+        <a href="/login" class="btn btn-outline btn-success landing-font">Login</a>
+        <a href="/register" class="btn btn-outline btn-warning landing-font">Register</a>
+    </div>
 </div>
 
 <%- include("./partials/footer") %>

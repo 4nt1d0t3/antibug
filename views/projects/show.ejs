@@ -1,6 +1,6 @@
 <%- include("../partials/header") %>
 <div class="container">
-    <div class="jumbotron bugTron">
+    <div class="jumbotron" id="project-tron">
         <h1 class="display-4 text-center"><%= project.name.toUpperCase() %></h1>
         <p class="lead text-center"><%= project.description %> </p>
         <hr class="my-4">
@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="text-center">
-        <a href="/projects">Go back</a>
+        <a class="back-link" href="/projects">Go back</a>
     </div>
     <div class="text-center margin-class">
         <a type="button" class="btn btn-outline-warning" href="/projects/<%= project.id %> /bugs/new">Log A New Bug</a>

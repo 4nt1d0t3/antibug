@@ -4,6 +4,7 @@ const express = require('express');
 const middleware = require('../middleware/index.js');
 const router = express.Router({ mergeParams: true });
 const Bug = sequelize.import('../models/bug');
+const Project = sequelize.import('../models/project');
 
 //NEW bugs route
 router.get('/new', middleware.isLoggedIn, async (req, res) => {
@@ -24,8 +25,11 @@ router.post('/', middleware.isLoggedIn, async (req, res) => {
 	// Create a new bug in database using variables above
 	Bug.create({ name, description, project, status })
 		.then((newBug) => {
-			req.flash('success', 'Succesfully logged new bug!');
-			res.redirect(`/projects/${req.params.id}`);
+			Project.increment('no_of_bugs', { where: { name: newBug.project } }
+			).then((bugOwner) => {
+				req.flash('success', 'Succesfully logged new bug!');
+				res.redirect(`/projects/${req.params.id}`);
+			});
 		})
 		.catch((err) => console.log(err));
 });

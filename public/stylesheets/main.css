@@ -140,3 +140,28 @@ body {
 	background: rgb(114, 162, 192);
 	background: radial-gradient(circle, rgba(114, 162, 192, 1) 1%, rgba(29, 101, 166, 1) 25%, rgba(25, 46, 91, 1) 100%);
 }
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+	#project-table {
+		width: auto;
+		background-color: #0074409f;
+		color: var(--orange);
+	}
+
+	.border-center {
+		width: 100%;
+		display: inline-block;
+		padding: 35px;
+		background-color: none;
+	}
+	.submit-button {
+		display: block;
+		margin-left: 25%;
+		margin-top: 20px;
+		width: 50%;
+		font-size: 1.5rem;
+		color: white;
+		background-color: var(--orange);
+	}
+}
